@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { User, Mail, Phone, MapPin, Briefcase, Calendar, Edit2, Upload, FileDown, Trash2, Users, TrendingUp, Target, Activity } from 'lucide-react';
+import { User, Mail, Phone, MapPin, Briefcase, Calendar, Edit2, Upload, FileDown, Trash2, Users, TrendingUp, Target, Activity, Video, Lightbulb, CheckCircle2, Play } from 'lucide-react';
 import { Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ResponsiveContainer } from 'recharts';
 
 // --- 1. Analytics Dashboard Component (Replaces ProfileViewer) ---
@@ -18,7 +18,17 @@ const AnalyticsDashboard = () => {
       interception: 50,
       interceptionAttempts: 95,
       goals: 25,
-      assists: 18
+      assists: 18,
+      insights: [
+        "Exceptional vision in the final third, consistently creating high-xG chances.",
+        "Dribbling success rate is in the top 1% of the league.",
+        "defensive work rate is managed to preserve energy for attacking transitions."
+      ],
+      actions: [
+        "Continue to drift into the half-spaces to overload midfield.",
+        "Look for diagonal through balls to breaking wingers.",
+        "Focus on free-kick delivery drills."
+      ]
     },
     {
       player: 'Kevin De Bruyne',
@@ -33,7 +43,17 @@ const AnalyticsDashboard = () => {
       interception: 68,
       interceptionAttempts: 145,
       goals: 10,
-      assists: 20
+      assists: 20,
+      insights: [
+        "World-class distribution range; key passes often bypass multiple defensive lines.",
+        "Crossing accuracy from deep positions is a primary offensive weapon.",
+        "Strong tactical awareness in pressing traps."
+      ],
+      actions: [
+        "Target the back post on early crosses.",
+        "Increase shooting frequency from outside the box.",
+        "Lead the high press triggers."
+      ]
     },
     {
       player: 'Virgil van Dijk',
@@ -48,7 +68,17 @@ const AnalyticsDashboard = () => {
       interception: 85,
       interceptionAttempts: 280,
       goals: 5,
-      assists: 2
+      assists: 2,
+      insights: [
+        "Dominant in aerial duels, neutralizing opposing set-pieces.",
+        "Composed ball-playing ability under high pressure.",
+        "Reads the game exceptionally well, reducing the need for last-ditch tackles."
+      ],
+      actions: [
+        "Organize the defensive line height.",
+        "Look for long diagonals to switch play quickly.",
+        "Attack the near post on offensive corners."
+      ]
     },
     {
       player: 'Kylian Mbappé',
@@ -63,7 +93,17 @@ const AnalyticsDashboard = () => {
       interception: 45,
       interceptionAttempts: 78,
       goals: 35,
-      assists: 12
+      assists: 12,
+      insights: [
+        "Explosive pace creates separation instantly.",
+        "Clinical finishing in 1v1 situations against the keeper.",
+        "Effective at isolating defenders on the wing."
+      ],
+      actions: [
+        "Utilize speed to exploit high defensive lines.",
+        "Cut inside to shoot with power.",
+        "Vary movement to keep defenders guessing."
+      ]
     }
   ];
 
@@ -95,6 +135,9 @@ const AnalyticsDashboard = () => {
             const value = values[index]?.trim();
             playerObj[header] = isNaN(value) ? value : Number(value);
           });
+          // Add default insights if missing from CSV
+          playerObj.insights = ["Data uploaded from CSV.", "Analyze stats for detailed insights."];
+          playerObj.actions = ["Review performance metrics.", "Identify key improvement areas."];
           return playerObj;
         });
         
@@ -193,147 +236,202 @@ const AnalyticsDashboard = () => {
 
         {/* Main Content */}
         {selectedPlayer ? (
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            {/* Player Info Card */}
-            <div className="bg-slate-800/50 backdrop-blur-sm rounded-lg shadow-xl border border-blue-500/20 p-6 h-fit">
-              <div className="text-center mb-6">
-                <div className="w-24 h-24 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-full mx-auto mb-4 flex items-center justify-center text-white text-3xl font-bold shadow-lg">
-                  {selectedPlayer.player?.charAt(0) || 'P'}
+          <div className="space-y-6">
+            {/* Row 1: Stats and Radar */}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              {/* Player Info Card */}
+              <div className="bg-slate-800/50 backdrop-blur-sm rounded-lg shadow-xl border border-blue-500/20 p-6 h-fit">
+                <div className="text-center mb-6">
+                  <div className="w-24 h-24 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-full mx-auto mb-4 flex items-center justify-center text-white text-3xl font-bold shadow-lg">
+                    {selectedPlayer.player?.charAt(0) || 'P'}
+                  </div>
+                  <h2 className="text-2xl font-bold text-white mb-1">
+                    {selectedPlayer.player}
+                  </h2>
+                  <p className="text-blue-400 font-medium">{selectedPlayer.team}</p>
+                  <span className="inline-block bg-blue-500/20 text-blue-300 border border-blue-500/30 px-3 py-1 rounded-full text-sm font-medium mt-2">
+                    {selectedPlayer.position}
+                  </span>
                 </div>
-                <h2 className="text-2xl font-bold text-white mb-1">
-                  {selectedPlayer.player}
-                </h2>
-                <p className="text-blue-400 font-medium">{selectedPlayer.team}</p>
-                <span className="inline-block bg-blue-500/20 text-blue-300 border border-blue-500/30 px-3 py-1 rounded-full text-sm font-medium mt-2">
-                  {selectedPlayer.position}
-                </span>
+
+                <div className="border-t border-slate-700 pt-6">
+                  <h3 className="font-semibold text-gray-200 mb-4 flex items-center gap-2">
+                    <Target className="w-5 h-5 text-blue-400" />
+                    Season Stats
+                  </h3>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="bg-green-500/10 border border-green-500/30 rounded-lg p-4 text-center">
+                      <div className="text-3xl font-bold text-green-400">
+                        {selectedPlayer.goals || 0}
+                      </div>
+                      <div className="text-sm text-gray-400 mt-1">Goals</div>
+                    </div>
+                    <div className="bg-blue-500/10 border border-blue-500/30 rounded-lg p-4 text-center">
+                      <div className="text-3xl font-bold text-blue-400">
+                        {selectedPlayer.assists || 0}
+                      </div>
+                      <div className="text-sm text-gray-400 mt-1">Assists</div>
+                    </div>
+                  </div>
+                </div>
               </div>
 
-              <div className="border-t border-slate-700 pt-6">
-                <h3 className="font-semibold text-gray-200 mb-4 flex items-center gap-2">
-                  <Target className="w-5 h-5 text-blue-400" />
-                  Season Stats
+              {/* Radar Chart & Stats */}
+              <div className="lg:col-span-2 bg-slate-800/50 backdrop-blur-sm rounded-lg shadow-xl border border-blue-500/20 p-6">
+                <h3 className="text-xl font-bold text-white mb-6 flex items-center gap-2">
+                  <TrendingUp className="w-6 h-6 text-blue-400" />
+                  Success Rate Analysis
                 </h3>
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="bg-green-500/10 border border-green-500/30 rounded-lg p-4 text-center">
-                    <div className="text-3xl font-bold text-green-400">
-                      {selectedPlayer.goals || 0}
+                <ResponsiveContainer width="100%" height={350}>
+                  <RadarChart data={getRadarData()}>
+                    <PolarGrid stroke="#475569" />
+                    <PolarAngleAxis
+                      dataKey="stat"
+                      tick={{ fill: '#cbd5e1', fontSize: 13, fontWeight: 600 }}
+                    />
+                    <PolarRadiusAxis angle={90} domain={[0, 100]} tick={{ fill: '#94a3b8', fontSize: 10 }} />
+                    <Radar
+                      name={selectedPlayer.player}
+                      dataKey="value"
+                      stroke="#3b82f6"
+                      fill="#3b82f6"
+                      fillOpacity={0.6}
+                      strokeWidth={3}
+                    />
+                  </RadarChart>
+                </ResponsiveContainer>
+
+                {/* Detailed Stats */}
+                <div className="mt-6 space-y-4">
+                  {/* Pass */}
+                  <div className="bg-slate-700/50 rounded-lg p-4">
+                    <div className="flex justify-between items-center mb-2">
+                      <span className="font-semibold text-gray-200">Pass</span>
+                      <div className="text-right">
+                        <span className="text-2xl font-bold text-blue-400">{selectedPlayer.pass}%</span>
+                        <div className="text-xs text-gray-400">
+                          {calculateSuccessful(selectedPlayer.pass, selectedPlayer.passAttempts)}/{selectedPlayer.passAttempts} successful
+                        </div>
+                      </div>
                     </div>
-                    <div className="text-sm text-gray-400 mt-1">Goals</div>
+                    <div className="w-full bg-slate-600 rounded-full h-3">
+                      <div
+                        className="bg-gradient-to-r from-blue-500 to-cyan-400 h-3 rounded-full transition-all duration-500"
+                        style={{ width: `${selectedPlayer.pass}%` }}
+                      ></div>
+                    </div>
                   </div>
-                  <div className="bg-blue-500/10 border border-blue-500/30 rounded-lg p-4 text-center">
-                    <div className="text-3xl font-bold text-blue-400">
-                      {selectedPlayer.assists || 0}
+
+                  {/* Dribble */}
+                  <div className="bg-slate-700/50 rounded-lg p-4">
+                    <div className="flex justify-between items-center mb-2">
+                      <span className="font-semibold text-gray-200">Dribble</span>
+                      <div className="text-right">
+                        <span className="text-2xl font-bold text-purple-400">{selectedPlayer.dribble}%</span>
+                        <div className="text-xs text-gray-400">
+                          {calculateSuccessful(selectedPlayer.dribble, selectedPlayer.dribbleAttempts)}/{selectedPlayer.dribbleAttempts} successful
+                        </div>
+                      </div>
                     </div>
-                    <div className="text-sm text-gray-400 mt-1">Assists</div>
+                    <div className="w-full bg-slate-600 rounded-full h-3">
+                      <div
+                        className="bg-gradient-to-r from-purple-500 to-pink-400 h-3 rounded-full transition-all duration-500"
+                        style={{ width: `${selectedPlayer.dribble}%` }}
+                      ></div>
+                    </div>
+                  </div>
+
+                  {/* Dual */}
+                  <div className="bg-slate-700/50 rounded-lg p-4">
+                    <div className="flex justify-between items-center mb-2">
+                      <span className="font-semibold text-gray-200">Dual</span>
+                      <div className="text-right">
+                        <span className="text-2xl font-bold text-orange-400">{selectedPlayer.dual}%</span>
+                        <div className="text-xs text-gray-400">
+                          {calculateSuccessful(selectedPlayer.dual, selectedPlayer.dualAttempts)}/{selectedPlayer.dualAttempts} successful
+                        </div>
+                      </div>
+                    </div>
+                    <div className="w-full bg-slate-600 rounded-full h-3">
+                      <div
+                        className="bg-gradient-to-r from-orange-500 to-red-400 h-3 rounded-full transition-all duration-500"
+                        style={{ width: `${selectedPlayer.dual}%` }}
+                      ></div>
+                    </div>
+                  </div>
+
+                  {/* Interception */}
+                  <div className="bg-slate-700/50 rounded-lg p-4">
+                    <div className="flex justify-between items-center mb-2">
+                      <span className="font-semibold text-gray-200">Interception</span>
+                      <div className="text-right">
+                        <span className="text-2xl font-bold text-green-400">{selectedPlayer.interception}%</span>
+                        <div className="text-xs text-gray-400">
+                          {calculateSuccessful(selectedPlayer.interception, selectedPlayer.interceptionAttempts)}/{selectedPlayer.interceptionAttempts} successful
+                        </div>
+                      </div>
+                    </div>
+                    <div className="w-full bg-slate-600 rounded-full h-3">
+                      <div
+                        className="bg-gradient-to-r from-green-500 to-emerald-400 h-3 rounded-full transition-all duration-500"
+                        style={{ width: `${selectedPlayer.interception}%` }}
+                      ></div>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
 
-            {/* Radar Chart & Stats */}
-            <div className="lg:col-span-2 bg-slate-800/50 backdrop-blur-sm rounded-lg shadow-xl border border-blue-500/20 p-6">
-              <h3 className="text-xl font-bold text-white mb-6 flex items-center gap-2">
-                <TrendingUp className="w-6 h-6 text-blue-400" />
-                Success Rate Analysis
-              </h3>
-              <ResponsiveContainer width="100%" height={350}>
-                <RadarChart data={getRadarData()}>
-                  <PolarGrid stroke="#475569" />
-                  <PolarAngleAxis
-                    dataKey="stat"
-                    tick={{ fill: '#cbd5e1', fontSize: 13, fontWeight: 600 }}
-                  />
-                  <PolarRadiusAxis angle={90} domain={[0, 100]} tick={{ fill: '#94a3b8', fontSize: 10 }} />
-                  <Radar
-                    name={selectedPlayer.player}
-                    dataKey="value"
-                    stroke="#3b82f6"
-                    fill="#3b82f6"
-                    fillOpacity={0.6}
-                    strokeWidth={3}
-                  />
-                </RadarChart>
-              </ResponsiveContainer>
+            {/* Row 2: Video & Insights (New Section) */}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              
+              {/* Video Component */}
+              <div className="lg:col-span-2 bg-slate-800/50 backdrop-blur-sm rounded-lg shadow-xl border border-blue-500/20 p-6">
+                <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
+                  <Video className="w-6 h-6 text-blue-400" />
+                  Match Analysis Video
+                </h3>
+                <div className="relative aspect-video bg-black rounded-lg overflow-hidden flex items-center justify-center border border-slate-700 group cursor-pointer">
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-60"></div>
+                  <Play className="w-16 h-16 text-white opacity-80 group-hover:opacity-100 group-hover:scale-110 transition-all duration-300 z-10" fill="currentColor" />
+                  <p className="absolute bottom-4 left-4 text-white font-medium z-10">Latest Match Highlights vs. Opponent</p>
+                  {/* Placeholder pattern */}
+                  <div className="absolute inset-0 opacity-20" style={{ backgroundImage: 'radial-gradient(circle, #3b82f6 1px, transparent 1px)', backgroundSize: '20px 20px' }}></div>
+                </div>
+              </div>
 
-              {/* Detailed Stats */}
-              <div className="mt-6 space-y-4">
-                {/* Pass */}
-                <div className="bg-slate-700/50 rounded-lg p-4">
-                  <div className="flex justify-between items-center mb-2">
-                    <span className="font-semibold text-gray-200">Pass</span>
-                    <div className="text-right">
-                      <span className="text-2xl font-bold text-blue-400">{selectedPlayer.pass}%</span>
-                      <div className="text-xs text-gray-400">
-                        {calculateSuccessful(selectedPlayer.pass, selectedPlayer.passAttempts)}/{selectedPlayer.passAttempts} successful
-                      </div>
-                    </div>
-                  </div>
-                  <div className="w-full bg-slate-600 rounded-full h-3">
-                    <div
-                      className="bg-gradient-to-r from-blue-500 to-cyan-400 h-3 rounded-full transition-all duration-500"
-                      style={{ width: `${selectedPlayer.pass}%` }}
-                    ></div>
-                  </div>
+              {/* Insights & Actions Component */}
+              <div className="bg-slate-800/50 backdrop-blur-sm rounded-lg shadow-xl border border-blue-500/20 p-6 flex flex-col">
+                <div className="mb-6">
+                  <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
+                    <Lightbulb className="w-6 h-6 text-yellow-400" />
+                    Coach's Insights
+                  </h3>
+                  <ul className="space-y-3">
+                    {selectedPlayer.insights?.map((insight, index) => (
+                      <li key={index} className="flex gap-3 text-gray-300 text-sm">
+                        <span className="block w-1.5 h-1.5 mt-1.5 rounded-full bg-yellow-400 flex-shrink-0"></span>
+                        {insight}
+                      </li>
+                    ))}
+                  </ul>
                 </div>
 
-                {/* Dribble */}
-                <div className="bg-slate-700/50 rounded-lg p-4">
-                  <div className="flex justify-between items-center mb-2">
-                    <span className="font-semibold text-gray-200">Dribble</span>
-                    <div className="text-right">
-                      <span className="text-2xl font-bold text-purple-400">{selectedPlayer.dribble}%</span>
-                      <div className="text-xs text-gray-400">
-                        {calculateSuccessful(selectedPlayer.dribble, selectedPlayer.dribbleAttempts)}/{selectedPlayer.dribbleAttempts} successful
+                <div className="mt-auto pt-6 border-t border-slate-700">
+                  <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
+                    <CheckCircle2 className="w-6 h-6 text-green-400" />
+                    Recommended Actions
+                  </h3>
+                  <div className="space-y-3">
+                    {selectedPlayer.actions?.map((action, index) => (
+                      <div key={index} className="bg-slate-700/50 p-3 rounded-lg border border-slate-600/50">
+                        <p className="text-sm text-blue-100 font-medium">{action}</p>
                       </div>
-                    </div>
-                  </div>
-                  <div className="w-full bg-slate-600 rounded-full h-3">
-                    <div
-                      className="bg-gradient-to-r from-purple-500 to-pink-400 h-3 rounded-full transition-all duration-500"
-                      style={{ width: `${selectedPlayer.dribble}%` }}
-                    ></div>
-                  </div>
-                </div>
-
-                {/* Dual */}
-                <div className="bg-slate-700/50 rounded-lg p-4">
-                  <div className="flex justify-between items-center mb-2">
-                    <span className="font-semibold text-gray-200">Dual</span>
-                    <div className="text-right">
-                      <span className="text-2xl font-bold text-orange-400">{selectedPlayer.dual}%</span>
-                      <div className="text-xs text-gray-400">
-                        {calculateSuccessful(selectedPlayer.dual, selectedPlayer.dualAttempts)}/{selectedPlayer.dualAttempts} successful
-                      </div>
-                    </div>
-                  </div>
-                  <div className="w-full bg-slate-600 rounded-full h-3">
-                    <div
-                      className="bg-gradient-to-r from-orange-500 to-red-400 h-3 rounded-full transition-all duration-500"
-                      style={{ width: `${selectedPlayer.dual}%` }}
-                    ></div>
-                  </div>
-                </div>
-
-                {/* Interception */}
-                <div className="bg-slate-700/50 rounded-lg p-4">
-                  <div className="flex justify-between items-center mb-2">
-                    <span className="font-semibold text-gray-200">Interception</span>
-                    <div className="text-right">
-                      <span className="text-2xl font-bold text-green-400">{selectedPlayer.interception}%</span>
-                      <div className="text-xs text-gray-400">
-                        {calculateSuccessful(selectedPlayer.interception, selectedPlayer.interceptionAttempts)}/{selectedPlayer.interceptionAttempts} successful
-                      </div>
-                    </div>
-                  </div>
-                  <div className="w-full bg-slate-600 rounded-full h-3">
-                    <div
-                      className="bg-gradient-to-r from-green-500 to-emerald-400 h-3 rounded-full transition-all duration-500"
-                      style={{ width: `${selectedPlayer.interception}%` }}
-                    ></div>
+                    ))}
                   </div>
                 </div>
               </div>
+
             </div>
           </div>
         ) : (
