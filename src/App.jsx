@@ -1,123 +1,162 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { User, Mail, Phone, MapPin, Briefcase, Calendar, Edit2, Upload, FileDown, Trash2, Users, TrendingUp, Target, Activity, Video, Lightbulb, CheckCircle2, Play } from 'lucide-react';
+import { User, Mail, Phone, MapPin, Briefcase, Calendar, Edit2, Upload, FileDown, Trash2, Users, TrendingUp, Target, Activity, Video, Lightbulb, CheckCircle2, Play, ChevronDown } from 'lucide-react';
 import { Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ResponsiveContainer } from 'recharts';
 
-// --- 1. Analytics Dashboard Component (Replaces ProfileViewer) ---
+// --- 1. Analytics Dashboard Component (Updated with Match Toggles) ---
 const AnalyticsDashboard = () => {
+  // Restructured Data: Players -> Matches -> Stats
   const demoData = [
     {
-      player: 'Lionel Messi',
+      id: 'p1',
+      name: 'Lionel Messi',
       team: 'Inter Miami',
       position: 'FW',
-      pass: 88,
-      passAttempts: 650,
-      dribble: 90,
-      dribbleAttempts: 420,
-      dual: 60,
-      dualAttempts: 180,
-      interception: 50,
-      interceptionAttempts: 95,
-      goals: 25,
-      assists: 18,
-      insights: [
-        "Exceptional vision in the final third, consistently creating high-xG chances.",
-        "Dribbling success rate is in the top 1% of the league.",
-        "defensive work rate is managed to preserve energy for attacking transitions."
-      ],
-      actions: [
-        "Continue to drift into the half-spaces to overload midfield.",
-        "Look for diagonal through balls to breaking wingers.",
-        "Focus on free-kick delivery drills."
+      matches: [
+        {
+          id: 'm1',
+          opponent: 'vs Orlando City',
+          date: 'Mar 2, 2024',
+          pass: 88, passAttempts: 65,
+          dribble: 92, dribbleAttempts: 12,
+          dual: 60, dualAttempts: 15,
+          interception: 25, interceptionAttempts: 2,
+          goals: 2, assists: 1,
+          insights: [
+            "Exceptional vision in the final third, creating 2 big chances.",
+            "Dribbling success rate (92%) broke defensive lines effectively.",
+          ],
+          actions: [
+            "Continue to drift into the half-spaces to overload midfield.",
+            "Look for diagonal through balls to breaking wingers."
+          ]
+        },
+        {
+          id: 'm2',
+          opponent: 'vs LA Galaxy',
+          date: 'Feb 25, 2024',
+          pass: 82, passAttempts: 58,
+          dribble: 85, dribbleAttempts: 14,
+          dual: 55, dualAttempts: 18,
+          interception: 30, interceptionAttempts: 3,
+          goals: 1, assists: 0,
+          insights: [
+            "Heavily marked, forcing deeper positioning to collect the ball.",
+            "Link-up play was solid despite high pressure."
+          ],
+          actions: [
+            "Release ball quicker against double teams.",
+            "Target free kicks to near post."
+          ]
+        }
       ]
     },
     {
-      player: 'Kevin De Bruyne',
+      id: 'p2',
+      name: 'Kevin De Bruyne',
       team: 'Man City',
       position: 'MF',
-      pass: 92,
-      passAttempts: 780,
-      dribble: 85,
-      dribbleAttempts: 310,
-      dual: 65,
-      dualAttempts: 220,
-      interception: 68,
-      interceptionAttempts: 145,
-      goals: 10,
-      assists: 20,
-      insights: [
-        "World-class distribution range; key passes often bypass multiple defensive lines.",
-        "Crossing accuracy from deep positions is a primary offensive weapon.",
-        "Strong tactical awareness in pressing traps."
-      ],
-      actions: [
-        "Target the back post on early crosses.",
-        "Increase shooting frequency from outside the box.",
-        "Lead the high press triggers."
+      matches: [
+        {
+          id: 'm1',
+          opponent: 'vs Liverpool',
+          date: 'Mar 10, 2024',
+          pass: 89, passAttempts: 75,
+          dribble: 80, dribbleAttempts: 5,
+          dual: 65, dualAttempts: 12,
+          interception: 70, interceptionAttempts: 8,
+          goals: 0, assists: 1,
+          insights: [
+            "Controlled tempo in midfield against a high press.",
+            "Corner kick delivery created the opening goal."
+          ],
+          actions: [
+            "Look for Haaland on early crosses.",
+            "Manage stamina for late game transition defense."
+          ]
+        },
+        {
+          id: 'm2',
+          opponent: 'vs Man United',
+          date: 'Mar 3, 2024',
+          pass: 94, passAttempts: 82,
+          dribble: 88, dribbleAttempts: 6,
+          dual: 70, dualAttempts: 10,
+          interception: 60, interceptionAttempts: 5,
+          goals: 0, assists: 2,
+          insights: [
+            "Dominated possession in the final third.",
+            "Through balls were lethal against the low block."
+          ],
+          actions: [
+            "Shoot more frequently from outside the box.",
+            "Lead the high press triggers."
+          ]
+        }
       ]
     },
     {
-      player: 'Virgil van Dijk',
+      id: 'p3',
+      name: 'Virgil van Dijk',
       team: 'Liverpool',
       position: 'DF',
-      pass: 82,
-      passAttempts: 890,
-      dribble: 70,
-      dribbleAttempts: 120,
-      dual: 88,
-      dualAttempts: 450,
-      interception: 85,
-      interceptionAttempts: 280,
-      goals: 5,
-      assists: 2,
-      insights: [
-        "Dominant in aerial duels, neutralizing opposing set-pieces.",
-        "Composed ball-playing ability under high pressure.",
-        "Reads the game exceptionally well, reducing the need for last-ditch tackles."
-      ],
-      actions: [
-        "Organize the defensive line height.",
-        "Look for long diagonals to switch play quickly.",
-        "Attack the near post on offensive corners."
-      ]
-    },
-    {
-      player: 'Kylian Mbappé',
-      team: 'Real Madrid',
-      position: 'FW',
-      pass: 80,
-      passAttempts: 520,
-      dribble: 92,
-      dribbleAttempts: 480,
-      dual: 58,
-      dualAttempts: 165,
-      interception: 45,
-      interceptionAttempts: 78,
-      goals: 35,
-      assists: 12,
-      insights: [
-        "Explosive pace creates separation instantly.",
-        "Clinical finishing in 1v1 situations against the keeper.",
-        "Effective at isolating defenders on the wing."
-      ],
-      actions: [
-        "Utilize speed to exploit high defensive lines.",
-        "Cut inside to shoot with power.",
-        "Vary movement to keep defenders guessing."
+      matches: [
+        {
+          id: 'm1',
+          opponent: 'vs Man City',
+          date: 'Mar 10, 2024',
+          pass: 85, passAttempts: 60,
+          dribble: 100, dribbleAttempts: 1,
+          dual: 90, dualAttempts: 10,
+          interception: 88, interceptionAttempts: 12,
+          goals: 0, assists: 0,
+          insights: [
+            "Dominant in aerial duels, neutralizing corners.",
+            "Excellent positioning prevented 1v1 situations."
+          ],
+          actions: [
+            "Organize the defensive line height on counters.",
+            "Look for long diagonals to Salah."
+          ]
+        }
       ]
     }
   ];
 
-  const [selectedPlayer, setSelectedPlayer] = useState(null);
-  const [useDemo, setUseDemo] = useState(true);
   const [players, setPlayers] = useState(demoData);
+  const [selectedPlayer, setSelectedPlayer] = useState(null);
+  const [selectedMatch, setSelectedMatch] = useState(null);
+  const [useDemo, setUseDemo] = useState(true);
   
-  // Set initial selected player on mount
+  // Initialize selection
   useEffect(() => {
-    if (players.length > 0) {
-      setSelectedPlayer(players[0]);
+    if (players.length > 0 && !selectedPlayer) {
+      const firstPlayer = players[0];
+      setSelectedPlayer(firstPlayer);
+      if (firstPlayer.matches?.length > 0) {
+        setSelectedMatch(firstPlayer.matches[0]);
+      }
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []); 
+  }, [players, selectedPlayer]); 
+
+  const handlePlayerChange = (e) => {
+    const playerName = e.target.value;
+    const player = players.find(p => p.name === playerName);
+    setSelectedPlayer(player);
+    // Reset match to the first one for the new player
+    if (player && player.matches?.length > 0) {
+      setSelectedMatch(player.matches[0]);
+    } else {
+      setSelectedMatch(null);
+    }
+  };
+
+  const handleMatchChange = (e) => {
+    const matchId = e.target.value;
+    if (selectedPlayer) {
+      const match = selectedPlayer.matches.find(m => m.id === matchId);
+      setSelectedMatch(match);
+    }
+  };
 
   const handleFileUpload = (event) => {
     const file = event.target.files[0];
@@ -128,22 +167,46 @@ const AnalyticsDashboard = () => {
         const rows = text.split('\n');
         const headers = rows[0].split(',').map(h => h.trim().toLowerCase());
         
-        const parsedData = rows.slice(1).filter(row => row.trim()).map(row => {
+        // Adapt flat CSV to new nested structure
+        const parsedPlayers = rows.slice(1).filter(row => row.trim()).map((row, index) => {
           const values = row.split(',');
-          const playerObj = {};
-          headers.forEach((header, index) => {
-            const value = values[index]?.trim();
-            playerObj[header] = isNaN(value) ? value : Number(value);
+          const rowData = {};
+          headers.forEach((header, idx) => {
+            const value = values[idx]?.trim();
+            rowData[header] = isNaN(value) ? value : Number(value);
           });
-          // Add default insights if missing from CSV
-          playerObj.insights = ["Data uploaded from CSV.", "Analyze stats for detailed insights."];
-          playerObj.actions = ["Review performance metrics.", "Identify key improvement areas."];
-          return playerObj;
+
+          // Create a player object wrapping the row data as a single "Uploaded Match"
+          return {
+            id: `upload-${index}`,
+            name: rowData.player || 'Unknown Player',
+            team: rowData.team || 'Unknown Team',
+            position: rowData.position || 'N/A',
+            matches: [{
+              id: `match-upload-${index}`,
+              opponent: 'Uploaded Match Data',
+              date: new Date().toLocaleDateString(),
+              pass: rowData.pass || 0,
+              passAttempts: rowData.passattempts || 0,
+              dribble: rowData.dribble || 0,
+              dribbleAttempts: rowData.dribbleattempts || 0,
+              dual: rowData.dual || 0,
+              dualAttempts: rowData.dualattempts || 0,
+              interception: rowData.interception || 0,
+              interceptionAttempts: rowData.interceptionattempts || 0,
+              goals: rowData.goals || 0,
+              assists: rowData.assists || 0,
+              insights: ["Data sourced from CSV upload."],
+              actions: ["Review uploaded metrics."]
+            }]
+          };
         });
         
-        setPlayers(parsedData);
-        if (parsedData.length > 0) {
-          setSelectedPlayer(parsedData[0]);
+        setPlayers(parsedPlayers);
+        if (parsedPlayers.length > 0) {
+          const firstP = parsedPlayers[0];
+          setSelectedPlayer(firstP);
+          if (firstP.matches.length > 0) setSelectedMatch(firstP.matches[0]);
         }
         setUseDemo(false);
       };
@@ -152,12 +215,12 @@ const AnalyticsDashboard = () => {
   };
 
   const getRadarData = () => {
-    if (!selectedPlayer) return [];
+    if (!selectedMatch) return [];
     return [
-      { stat: 'Pass', value: selectedPlayer.pass || 0 },
-      { stat: 'Dribble', value: selectedPlayer.dribble || 0 },
-      { stat: 'Dual', value: selectedPlayer.dual || 0 },
-      { stat: 'Interception', value: selectedPlayer.interception || 0 }
+      { stat: 'Pass', value: selectedMatch.pass || 0 },
+      { stat: 'Dribble', value: selectedMatch.dribble || 0 },
+      { stat: 'Dual', value: selectedMatch.dual || 0 },
+      { stat: 'Interception', value: selectedMatch.interception || 0 }
     ];
   };
 
@@ -169,6 +232,41 @@ const AnalyticsDashboard = () => {
     <div className="p-6 bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 min-h-full rounded-b-xl">
       <div className="max-w-7xl mx-auto">
         
+        {/* Top Right Actions (Small Format) */}
+        <div className="flex justify-end gap-3 mb-2">
+          <button
+            onClick={() => {
+              setUseDemo(true);
+              setPlayers(demoData);
+              const p = demoData[0];
+              setSelectedPlayer(p);
+              setSelectedMatch(p.matches[0]);
+            }}
+            className={`px-3 py-1.5 rounded-md text-xs font-medium transition flex items-center gap-1 ${
+              useDemo
+                ? 'bg-blue-600 text-white shadow-lg shadow-blue-500/50'
+                : 'bg-slate-700 text-gray-300 hover:bg-slate-600'
+            }`}
+          >
+            <Activity className="w-3 h-3" />
+            Use Demo Data
+          </button>
+          <label className={`px-3 py-1.5 rounded-md text-xs font-medium cursor-pointer transition flex items-center gap-1 ${
+            !useDemo
+              ? 'bg-blue-600 text-white shadow-lg shadow-blue-500/50'
+              : 'bg-slate-700 text-gray-300 hover:bg-slate-600'
+          }`}>
+            <input
+              type="file"
+              accept=".csv"
+              onChange={handleFileUpload}
+              className="hidden"
+            />
+            <Upload className="w-3 h-3" />
+            Upload CSV
+          </label>
+        </div>
+
         {/* Header */}
         <div className="text-center mb-8">
           <h1 className="text-5xl font-bold text-white mb-2 flex items-center justify-center gap-3">
@@ -178,64 +276,48 @@ const AnalyticsDashboard = () => {
           <p className="text-blue-200 text-lg">Complete Player Performance Dashboard</p>
         </div>
 
-        {/* Data Source Toggle */}
-        <div className="bg-slate-800/50 backdrop-blur-sm rounded-lg shadow-xl border border-blue-500/20 p-6 mb-6">
-          <div className="flex items-center gap-6 mb-4 flex-wrap">
-            <button
-              onClick={() => {
-                setUseDemo(true);
-                setPlayers(demoData);
-                setSelectedPlayer(demoData[0]);
-              }}
-              className={`px-4 py-2 rounded-lg font-medium transition ${
-                useDemo
-                  ? 'bg-blue-600 text-white shadow-lg shadow-blue-500/50'
-                  : 'bg-slate-700 text-gray-300 hover:bg-slate-600'
-              }`}
-            >
-              Use Demo Data
-            </button>
-            <label className={`px-4 py-2 rounded-lg font-medium cursor-pointer transition ${
-              !useDemo
-                ? 'bg-blue-600 text-white shadow-lg shadow-blue-500/50'
-                : 'bg-slate-700 text-gray-300 hover:bg-slate-600'
-            }`}>
-              <input
-                type="file"
-                accept=".csv"
-                onChange={handleFileUpload}
-                className="hidden"
-              />
-              <Upload className="w-4 h-4 inline mr-2" />
-              Upload CSV
-            </label>
-          </div>
+        {/* Controls Bar - Centered Dropdowns */}
+        {players.length > 0 && (
+          <div className="bg-slate-800/50 backdrop-blur-sm rounded-lg shadow-xl border border-blue-500/20 p-4 mb-6 flex justify-center">
+            <div className="flex flex-col sm:flex-row gap-4 bg-slate-900/50 p-2 rounded-lg border border-slate-700">
+              {/* 1. Player Dropdown */}
+              <div className="flex items-center gap-2">
+                <Users className="w-4 h-4 text-blue-400" />
+                <select
+                  value={selectedPlayer?.name || ''}
+                  onChange={handlePlayerChange}
+                  className="bg-slate-700 border border-slate-600 text-white text-sm rounded px-3 py-2 focus:ring-2 focus:ring-blue-500 outline-none min-w-[200px]"
+                >
+                  {players.map((player) => (
+                    <option key={player.id} value={player.name}>
+                      {player.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
 
-          {/* Player Selection */}
-          {players.length > 0 && (
-            <div className="flex items-center gap-4 flex-wrap">
-              <Users className="w-5 h-5 text-blue-400" />
-              <label className="font-medium text-gray-200">Select Player:</label>
-              <select
-                value={selectedPlayer?.player || ''}
-                onChange={(e) => {
-                  const player = players.find(p => p.player === e.target.value);
-                  setSelectedPlayer(player);
-                }}
-                className="flex-1 max-w-xs px-4 py-2 bg-slate-700 border border-slate-600 text-white rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              >
-                {players.map((player, idx) => (
-                  <option key={idx} value={player.player}>
-                    {player.player} ({player.team})
-                  </option>
-                ))}
-              </select>
+              {/* 2. Match Dropdown */}
+              <div className="flex items-center gap-2">
+                <Calendar className="w-4 h-4 text-green-400" />
+                <select
+                  value={selectedMatch?.id || ''}
+                  onChange={handleMatchChange}
+                  disabled={!selectedPlayer || !selectedPlayer.matches?.length}
+                  className="bg-slate-700 border border-slate-600 text-white text-sm rounded px-3 py-2 focus:ring-2 focus:ring-green-500 outline-none min-w-[200px] disabled:opacity-50"
+                >
+                  {selectedPlayer?.matches?.map((match) => (
+                    <option key={match.id} value={match.id}>
+                      {match.opponent} ({match.date})
+                    </option>
+                  ))}
+                </select>
+              </div>
             </div>
-          )}
-        </div>
+          </div>
+        )}
 
         {/* Main Content */}
-        {selectedPlayer ? (
+        {selectedPlayer && selectedMatch ? (
           <div className="space-y-6">
             {/* Row 1: Stats and Radar */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -243,32 +325,37 @@ const AnalyticsDashboard = () => {
               <div className="bg-slate-800/50 backdrop-blur-sm rounded-lg shadow-xl border border-blue-500/20 p-6 h-fit">
                 <div className="text-center mb-6">
                   <div className="w-24 h-24 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-full mx-auto mb-4 flex items-center justify-center text-white text-3xl font-bold shadow-lg">
-                    {selectedPlayer.player?.charAt(0) || 'P'}
+                    {selectedPlayer.name?.charAt(0) || 'P'}
                   </div>
                   <h2 className="text-2xl font-bold text-white mb-1">
-                    {selectedPlayer.player}
+                    {selectedPlayer.name}
                   </h2>
                   <p className="text-blue-400 font-medium">{selectedPlayer.team}</p>
-                  <span className="inline-block bg-blue-500/20 text-blue-300 border border-blue-500/30 px-3 py-1 rounded-full text-sm font-medium mt-2">
-                    {selectedPlayer.position}
-                  </span>
+                  <div className="mt-2 flex justify-center gap-2">
+                    <span className="bg-blue-500/20 text-blue-300 border border-blue-500/30 px-3 py-1 rounded-full text-sm font-medium">
+                      {selectedPlayer.position}
+                    </span>
+                    <span className="bg-green-500/20 text-green-300 border border-green-500/30 px-3 py-1 rounded-full text-sm font-medium">
+                      {selectedMatch.opponent}
+                    </span>
+                  </div>
                 </div>
 
                 <div className="border-t border-slate-700 pt-6">
                   <h3 className="font-semibold text-gray-200 mb-4 flex items-center gap-2">
                     <Target className="w-5 h-5 text-blue-400" />
-                    Season Stats
+                    Match Stats
                   </h3>
                   <div className="grid grid-cols-2 gap-4">
                     <div className="bg-green-500/10 border border-green-500/30 rounded-lg p-4 text-center">
                       <div className="text-3xl font-bold text-green-400">
-                        {selectedPlayer.goals || 0}
+                        {selectedMatch.goals || 0}
                       </div>
                       <div className="text-sm text-gray-400 mt-1">Goals</div>
                     </div>
                     <div className="bg-blue-500/10 border border-blue-500/30 rounded-lg p-4 text-center">
                       <div className="text-3xl font-bold text-blue-400">
-                        {selectedPlayer.assists || 0}
+                        {selectedMatch.assists || 0}
                       </div>
                       <div className="text-sm text-gray-400 mt-1">Assists</div>
                     </div>
@@ -278,10 +365,14 @@ const AnalyticsDashboard = () => {
 
               {/* Radar Chart & Stats */}
               <div className="lg:col-span-2 bg-slate-800/50 backdrop-blur-sm rounded-lg shadow-xl border border-blue-500/20 p-6">
-                <h3 className="text-xl font-bold text-white mb-6 flex items-center gap-2">
-                  <TrendingUp className="w-6 h-6 text-blue-400" />
-                  Success Rate Analysis
-                </h3>
+                <div className="flex justify-between items-center mb-6">
+                  <h3 className="text-xl font-bold text-white flex items-center gap-2">
+                    <TrendingUp className="w-6 h-6 text-blue-400" />
+                    Performance Analysis
+                  </h3>
+                  <span className="text-sm text-gray-400">{selectedMatch.date}</span>
+                </div>
+                
                 <ResponsiveContainer width="100%" height={350}>
                   <RadarChart data={getRadarData()}>
                     <PolarGrid stroke="#475569" />
@@ -291,7 +382,7 @@ const AnalyticsDashboard = () => {
                     />
                     <PolarRadiusAxis angle={90} domain={[0, 100]} tick={{ fill: '#94a3b8', fontSize: 10 }} />
                     <Radar
-                      name={selectedPlayer.player}
+                      name={selectedPlayer.name}
                       dataKey="value"
                       stroke="#3b82f6"
                       fill="#3b82f6"
@@ -308,16 +399,16 @@ const AnalyticsDashboard = () => {
                     <div className="flex justify-between items-center mb-2">
                       <span className="font-semibold text-gray-200">Pass</span>
                       <div className="text-right">
-                        <span className="text-2xl font-bold text-blue-400">{selectedPlayer.pass}%</span>
+                        <span className="text-2xl font-bold text-blue-400">{selectedMatch.pass}%</span>
                         <div className="text-xs text-gray-400">
-                          {calculateSuccessful(selectedPlayer.pass, selectedPlayer.passAttempts)}/{selectedPlayer.passAttempts} successful
+                          {calculateSuccessful(selectedMatch.pass, selectedMatch.passAttempts)}/{selectedMatch.passAttempts} successful
                         </div>
                       </div>
                     </div>
                     <div className="w-full bg-slate-600 rounded-full h-3">
                       <div
                         className="bg-gradient-to-r from-blue-500 to-cyan-400 h-3 rounded-full transition-all duration-500"
-                        style={{ width: `${selectedPlayer.pass}%` }}
+                        style={{ width: `${selectedMatch.pass}%` }}
                       ></div>
                     </div>
                   </div>
@@ -327,16 +418,16 @@ const AnalyticsDashboard = () => {
                     <div className="flex justify-between items-center mb-2">
                       <span className="font-semibold text-gray-200">Dribble</span>
                       <div className="text-right">
-                        <span className="text-2xl font-bold text-purple-400">{selectedPlayer.dribble}%</span>
+                        <span className="text-2xl font-bold text-purple-400">{selectedMatch.dribble}%</span>
                         <div className="text-xs text-gray-400">
-                          {calculateSuccessful(selectedPlayer.dribble, selectedPlayer.dribbleAttempts)}/{selectedPlayer.dribbleAttempts} successful
+                          {calculateSuccessful(selectedMatch.dribble, selectedMatch.dribbleAttempts)}/{selectedMatch.dribbleAttempts} successful
                         </div>
                       </div>
                     </div>
                     <div className="w-full bg-slate-600 rounded-full h-3">
                       <div
                         className="bg-gradient-to-r from-purple-500 to-pink-400 h-3 rounded-full transition-all duration-500"
-                        style={{ width: `${selectedPlayer.dribble}%` }}
+                        style={{ width: `${selectedMatch.dribble}%` }}
                       ></div>
                     </div>
                   </div>
@@ -346,16 +437,16 @@ const AnalyticsDashboard = () => {
                     <div className="flex justify-between items-center mb-2">
                       <span className="font-semibold text-gray-200">Dual</span>
                       <div className="text-right">
-                        <span className="text-2xl font-bold text-orange-400">{selectedPlayer.dual}%</span>
+                        <span className="text-2xl font-bold text-orange-400">{selectedMatch.dual}%</span>
                         <div className="text-xs text-gray-400">
-                          {calculateSuccessful(selectedPlayer.dual, selectedPlayer.dualAttempts)}/{selectedPlayer.dualAttempts} successful
+                          {calculateSuccessful(selectedMatch.dual, selectedMatch.dualAttempts)}/{selectedMatch.dualAttempts} successful
                         </div>
                       </div>
                     </div>
                     <div className="w-full bg-slate-600 rounded-full h-3">
                       <div
                         className="bg-gradient-to-r from-orange-500 to-red-400 h-3 rounded-full transition-all duration-500"
-                        style={{ width: `${selectedPlayer.dual}%` }}
+                        style={{ width: `${selectedMatch.dual}%` }}
                       ></div>
                     </div>
                   </div>
@@ -365,16 +456,16 @@ const AnalyticsDashboard = () => {
                     <div className="flex justify-between items-center mb-2">
                       <span className="font-semibold text-gray-200">Interception</span>
                       <div className="text-right">
-                        <span className="text-2xl font-bold text-green-400">{selectedPlayer.interception}%</span>
+                        <span className="text-2xl font-bold text-green-400">{selectedMatch.interception}%</span>
                         <div className="text-xs text-gray-400">
-                          {calculateSuccessful(selectedPlayer.interception, selectedPlayer.interceptionAttempts)}/{selectedPlayer.interceptionAttempts} successful
+                          {calculateSuccessful(selectedMatch.interception, selectedMatch.interceptionAttempts)}/{selectedMatch.interceptionAttempts} successful
                         </div>
                       </div>
                     </div>
                     <div className="w-full bg-slate-600 rounded-full h-3">
                       <div
                         className="bg-gradient-to-r from-green-500 to-emerald-400 h-3 rounded-full transition-all duration-500"
-                        style={{ width: `${selectedPlayer.interception}%` }}
+                        style={{ width: `${selectedMatch.interception}%` }}
                       ></div>
                     </div>
                   </div>
@@ -382,7 +473,7 @@ const AnalyticsDashboard = () => {
               </div>
             </div>
 
-            {/* Row 2: Video & Insights (New Section) */}
+            {/* Row 2: Video & Insights */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
               
               {/* Video Component */}
@@ -394,8 +485,9 @@ const AnalyticsDashboard = () => {
                 <div className="relative aspect-video bg-black rounded-lg overflow-hidden flex items-center justify-center border border-slate-700 group cursor-pointer">
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-60"></div>
                   <Play className="w-16 h-16 text-white opacity-80 group-hover:opacity-100 group-hover:scale-110 transition-all duration-300 z-10" fill="currentColor" />
-                  <p className="absolute bottom-4 left-4 text-white font-medium z-10">Latest Match Highlights vs. Opponent</p>
-                  {/* Placeholder pattern */}
+                  <p className="absolute bottom-4 left-4 text-white font-medium z-10">
+                    Highlights: {selectedPlayer.name} {selectedMatch.opponent}
+                  </p>
                   <div className="absolute inset-0 opacity-20" style={{ backgroundImage: 'radial-gradient(circle, #3b82f6 1px, transparent 1px)', backgroundSize: '20px 20px' }}></div>
                 </div>
               </div>
@@ -408,7 +500,7 @@ const AnalyticsDashboard = () => {
                     Coach's Insights
                   </h3>
                   <ul className="space-y-3">
-                    {selectedPlayer.insights?.map((insight, index) => (
+                    {selectedMatch.insights?.map((insight, index) => (
                       <li key={index} className="flex gap-3 text-gray-300 text-sm">
                         <span className="block w-1.5 h-1.5 mt-1.5 rounded-full bg-yellow-400 flex-shrink-0"></span>
                         {insight}
@@ -420,10 +512,10 @@ const AnalyticsDashboard = () => {
                 <div className="mt-auto pt-6 border-t border-slate-700">
                   <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
                     <CheckCircle2 className="w-6 h-6 text-green-400" />
-                    Recommended Actions
+                    Action Plan
                   </h3>
                   <div className="space-y-3">
-                    {selectedPlayer.actions?.map((action, index) => (
+                    {selectedMatch.actions?.map((action, index) => (
                       <div key={index} className="bg-slate-700/50 p-3 rounded-lg border border-slate-600/50">
                         <p className="text-sm text-blue-100 font-medium">{action}</p>
                       </div>
