@@ -21,6 +21,8 @@ const AnalyticsDashboard = () => {
           dual: 60, dualAttempts: 15,
           interception: 25, interceptionAttempts: 2,
           goals: 2, assists: 1,
+          // Example YouTube Embed URL
+          videoUrl: "https://www.youtube.com/watch?v=jV0PbW8fJKk", 
           insights: [
             "Exceptional vision in the final third, creating 2 big chances.",
             "Dribbling success rate (92%) broke defensive lines effectively.",
@@ -39,6 +41,7 @@ const AnalyticsDashboard = () => {
           dual: 55, dualAttempts: 18,
           interception: 30, interceptionAttempts: 3,
           goals: 1, assists: 0,
+          videoUrl: "", // Empty URL to test fallback state
           insights: [
             "Heavily marked, forcing deeper positioning to collect the ball.",
             "Link-up play was solid despite high pressure."
@@ -65,6 +68,7 @@ const AnalyticsDashboard = () => {
           dual: 65, dualAttempts: 12,
           interception: 70, interceptionAttempts: 8,
           goals: 0, assists: 1,
+          videoUrl: "https://www.youtube.com/embed/ExampleID2",
           insights: [
             "Controlled tempo in midfield against a high press.",
             "Corner kick delivery created the opening goal."
@@ -196,6 +200,8 @@ const AnalyticsDashboard = () => {
               interceptionAttempts: rowData.interceptionattempts || 0,
               goals: rowData.goals || 0,
               assists: rowData.assists || 0,
+              // Map video url column if it exists in CSV
+              videoUrl: rowData.videourl || "",
               insights: ["Data sourced from CSV upload."],
               actions: ["Review uploaded metrics."]
             }]
@@ -482,13 +488,25 @@ const AnalyticsDashboard = () => {
                   <Video className="w-6 h-6 text-blue-400" />
                   Match Analysis Video
                 </h3>
-                <div className="relative aspect-video bg-black rounded-lg overflow-hidden flex items-center justify-center border border-slate-700 group cursor-pointer">
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-60"></div>
-                  <Play className="w-16 h-16 text-white opacity-80 group-hover:opacity-100 group-hover:scale-110 transition-all duration-300 z-10" fill="currentColor" />
-                  <p className="absolute bottom-4 left-4 text-white font-medium z-10">
-                    Highlights: {selectedPlayer.name} {selectedMatch.opponent}
-                  </p>
-                  <div className="absolute inset-0 opacity-20" style={{ backgroundImage: 'radial-gradient(circle, #3b82f6 1px, transparent 1px)', backgroundSize: '20px 20px' }}></div>
+                <div className="relative aspect-video bg-black rounded-lg overflow-hidden border border-slate-700">
+                  {selectedMatch.videoUrl ? (
+                    <iframe 
+                      src={selectedMatch.videoUrl} 
+                      title="Match Analysis"
+                      className="w-full h-full"
+                      frameBorder="0"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      allowFullScreen
+                    ></iframe>
+                  ) : (
+                    /* Fallback for matches without video */
+                    <div className="flex items-center justify-center h-full flex-col">
+                      <div className="p-4 bg-slate-800 rounded-full mb-3">
+                         <Video className="w-8 h-8 text-slate-500" />
+                      </div>
+                      <p className="text-slate-400">No video available for this match</p>
+                    </div>
+                  )}
                 </div>
               </div>
 
