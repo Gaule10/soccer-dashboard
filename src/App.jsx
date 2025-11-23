@@ -22,7 +22,7 @@ const AnalyticsDashboard = () => {
           interception: 25, interceptionAttempts: 2,
           goals: 2, assists: 1,
           // Example YouTube Embed URL
-          videoUrl: "https://www.youtube.com/watch?v=jV0PbW8fJKk", 
+          videoUrl: "https://www.youtube.com/embed/p7T-WSC9Puw", 
           insights: [
             "Exceptional vision in the final third, creating 2 big chances.",
             "Dribbling success rate (92%) broke defensive lines effectively.",
@@ -275,8 +275,13 @@ const AnalyticsDashboard = () => {
 
         {/* Header */}
         <div className="text-center mb-8">
-          <h1 className="text-5xl font-bold text-white mb-2 flex items-center justify-center gap-3">
-            <Activity className="w-12 h-12 text-blue-400" />
+          <h1 className="text-5xl font-bold text-white mb-2 flex items-center justify-center gap-4">
+            {/* UPDATED: Logo Image */}
+            <img 
+              src="/logo.jpeg" 
+              alt="FC360 Logo" 
+              className="w-16 h-16 object-contain bg-white rounded-xl p-1 shadow-lg" 
+            />
             FC360 Analytics
           </h1>
           <p className="text-blue-200 text-lg">Complete Player Performance Dashboard</p>
@@ -955,7 +960,15 @@ const TaggerApp = () => {
   return (
     <div className="p-4 bg-gray-900 min-h-full">
       <div className="max-w-7xl mx-auto">
-        <h1 className="text-3xl font-bold text-white mb-6 hidden lg:block">Soccer Match Event Tagger</h1>
+        {/* UPDATED: Tagger Header with Logo */}
+        <div className="flex items-center gap-4 mb-6 hidden lg:flex">
+          <img 
+            src="/logo.jpeg" 
+            alt="FC360 Logo" 
+            className="w-12 h-12 object-contain bg-white rounded-lg p-1" 
+          />
+          <h1 className="text-3xl font-bold text-white">Soccer Match Event Tagger</h1>
+        </div>
         
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Main Canvas Area & Controls */}
