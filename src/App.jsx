@@ -278,7 +278,7 @@ const AnalyticsDashboard = () => {
           <h1 className="text-5xl font-bold text-white mb-2 flex items-center justify-center gap-4">
             {/* UPDATED: Logo Image */}
             <img 
-              src="/logo.jpeg" 
+              src="/logo.png" 
               alt="FC360 Logo" 
               className="w-16 h-16 object-contain bg-white rounded-xl p-1 shadow-lg" 
             />
@@ -963,7 +963,7 @@ const TaggerApp = () => {
         {/* UPDATED: Tagger Header with Logo */}
         <div className="flex items-center gap-4 mb-6 hidden lg:flex">
           <img 
-            src="/logo.jpeg" 
+            src="/logo.png" 
             alt="FC360 Logo" 
             className="w-12 h-12 object-contain bg-white rounded-lg p-1" 
           />
